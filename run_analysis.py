@@ -10,6 +10,7 @@ import os
 import asyncio
 from datetime import datetime
 import json
+import os # Added import
 
 def run_command(command, description):
     """Exécute une commande avec gestion d'erreurs"""
@@ -46,13 +47,20 @@ def check_dependencies_v2():
     if missing_packages:
         print(f"❌ Packages V2 manquants: {', '.join(missing_packages)}")
         print("📦 Installation des dépendances V2...")
-        return run_command("pip install -r requirements_v2.txt", "Installation des dépendances V2")
+        return run_command("pip install -r requirements.txt", "Installation des dépendances V2")
     else:
         print("✅ Toutes les dépendances V2 sont installées")
         return True
 
 def configure_claude_api():
     """Configuration optionnelle de l'API Claude"""
+    # Vérifier d'abord la variable d'environnement
+    env_api_key = os.environ.get("CLAUDE_API_KEY")
+    if env_api_key:
+        print("🔑 Clé API Claude trouvée dans la variable d'environnement CLAUDE_API_KEY.")
+        return env_api_key
+
+    # Si la variable d'environnement n'est pas définie, procéder à la configuration manuelle
     print("\n🤖 CONFIGURATION API CLAUDE (Optionnel)")
     print("="*50)
     print("L'API Claude améliore considérablement la précision d'analyse.")

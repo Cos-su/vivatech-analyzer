@@ -62,10 +62,12 @@ class CacheManager:
         }
         self.cache.set(cache_key, cache_data)
 
+import os # Ensure os is imported
+
 class ClaudeAnalyzer:
     """Analyseur sémantique utilisant l'API Claude"""
     
-    def __init__(self, api_key: str = None):
+    def __init__(self, api_key: str = None, model_name: str = "claude-3-haiku-20240307"):
         if api_key:
             self.client = anthropic.Anthropic(api_key=api_key)
             self.enabled = True
@@ -73,6 +75,7 @@ class ClaudeAnalyzer:
             self.client = None
             self.enabled = False
             print("⚠️ API Claude non configurée - utilisation scoring classique")
+        self.model_name = model_name
     
     def analyze_startup_relevance(self, content: str, description: str, company_name: str) -> Dict:
         """Analyse la pertinence d'une startup avec Claude"""
@@ -119,7 +122,7 @@ Répondez UNIQUEMENT en JSON valide:
 """
             
             response = self.client.messages.create(
-                model="claude-3-haiku-20240307",  # Modèle plus rapide pour le volume
+                model=self.model_name,  # Modèle plus rapide pour le volume
                 max_tokens=500,
                 messages=[{"role": "user", "content": prompt}]
             )
@@ -341,14 +344,14 @@ class AsyncWebScraper:
 class VivaTechAnalyzerV2:
     """Analyseur VivaTech V2 avec performances optimisées"""
     
-    def __init__(self, csv_file_path: str, claude_api_key: str = None):
+    def __init__(self, csv_file_path: str, claude_api_key: str = None, claude_model_name: str = "claude-3-haiku-20240307"):
         self.csv_file_path = csv_file_path
         self.df = None
         self.scored_startups = []
         
         # Composants
         self.cache_manager = CacheManager()
-        self.claude_analyzer = ClaudeAnalyzer(claude_api_key)
+        self.claude_analyzer = ClaudeAnalyzer(claude_api_key, model_name=claude_model_name)
         
         print(f"🚀 VivaTech Analyzer V2 initialisé")
         print(f"   Cache: {'✅ Activé' if self.cache_manager else '❌ Désactivé'}")
@@ -835,8 +838,8 @@ async def main():
     print("=" * 60)
     
     # Configuration
-    CLAUDE_API_KEY = None  # À définir si vous avez une clé API
-    CSV_FILE = '/Users/cos/Documents/GitHub/extractVivaTech/VivaTech.csv'
+    CLAUDE_API_KEY = os.environ.get("CLAUDE_API_KEY")
+    CSV_FILE = 'VivaTech.csv'
     
     # Initialisation
     analyzer = VivaTechAnalyzerV2(CSV_FILE, CLAUDE_API_KEY)
