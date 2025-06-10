@@ -1,0 +1,33 @@
+# Core dependencies
+python-dotenv>=1.0.0
+pandas>=2.0.0
+numpy>=1.24.0
+requests>=2.31.0
+
+# Claude API (when available)
+# anthropic>=0.3.0
+
+# Data processing
+openpyxl>=3.1.0
+xlsxwriter>=3.1.0
+
+# Testing
+pytest>=7.4.0
+pytest-cov>=4.1.0
+pytest-mock>=3.11.0
+
+# Logging and monitoring
+loguru>=0.7.0
+
+# Type checking
+mypy>=1.5.0
+types-requests>=2.31.0
+
+# Code quality
+black>=23.7.0
+flake8>=6.1.0
+isort>=5.12.0
+
+# Documentation
+mkdocs>=1.5.0
+mkdocs-material>=9.2.0
